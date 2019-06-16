@@ -1,0 +1,14 @@
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\bin\Debug\GoEasyPro.exe.config
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\bin\Debug\GoEasyPro.exe
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\bin\Debug\GoEasyPro.pdb
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\bin\Debug\GoEasyPro.xml
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.vbprojAssemblyReference.cache
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.Form1.resources
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.Resources.resources
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.vbproj.GenerateResource.cache
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.vbproj.CoreCompileInputs.cache
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.exe
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.xml
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.pdb
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.Form2.resources
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.browseForm.resources
