@@ -93,16 +93,6 @@ Namespace My.Resources
         '''<summary>
         '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         '''</summary>
-        Friend ReadOnly Property iconfinder_gopro_416381() As System.Drawing.Bitmap
-            Get
-                Dim obj As Object = ResourceManager.GetObject("iconfinder_gopro_416381", resourceCulture)
-                Return CType(obj,System.Drawing.Bitmap)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        '''</summary>
         Friend ReadOnly Property iconfinder_power_1055002() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("iconfinder_power_1055002", resourceCulture)
@@ -133,6 +123,36 @@ Namespace My.Resources
         '''<summary>
         '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         '''</summary>
+        Friend ReadOnly Property microSD_green() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("microSD_green", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        '''</summary>
+        Friend ReadOnly Property microSD_red() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("microSD_red", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        '''</summary>
+        Friend ReadOnly Property microSD_yellow() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("microSD_yellow", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        '''</summary>
         Friend ReadOnly Property offline() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("offline", resourceCulture)
@@ -146,16 +166,6 @@ Namespace My.Resources
         Friend ReadOnly Property online() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("online", resourceCulture)
-                Return CType(obj,System.Drawing.Bitmap)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        '''</summary>
-        Friend ReadOnly Property photomode() As System.Drawing.Bitmap
-            Get
-                Dim obj As Object = ResourceManager.GetObject("photomode", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -183,9 +193,9 @@ Namespace My.Resources
         '''<summary>
         '''  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         '''</summary>
-        Friend ReadOnly Property videomode() As System.Drawing.Bitmap
+        Friend ReadOnly Property stop_button() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("videomode", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("stop_button", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
