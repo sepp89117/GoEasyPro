@@ -54,6 +54,13 @@
     <ApplicationIcon>gopro_114px_1105917_easyicon.net.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ManagedWifi, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ManagedWifi\bin\Release\netstandard2.0\ManagedWifi.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -81,12 +88,6 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="browseForm.Designer.vb">
-      <DependentUpon>browseForm.vb</DependentUpon>
-    </Compile>
-    <Compile Include="browseForm.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Form1.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -98,6 +99,18 @@
       <DependentUpon>Form2.vb</DependentUpon>
     </Compile>
     <Compile Include="Form2.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="lWait.Designer.vb">
+      <DependentUpon>lWait.vb</DependentUpon>
+    </Compile>
+    <Compile Include="lWait.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MediaBrowse.Designer.vb">
+      <DependentUpon>MediaBrowse.vb</DependentUpon>
+    </Compile>
+    <Compile Include="MediaBrowse.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
@@ -115,22 +128,34 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="pWait.Designer.vb">
+      <DependentUpon>pWait.vb</DependentUpon>
+    </Compile>
+    <Compile Include="pWait.vb">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="browseForm.resx">
-      <DependentUpon>browseForm.vb</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form2.resx">
       <DependentUpon>Form2.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="lWait.resx">
+      <DependentUpon>lWait.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MediaBrowse.resx">
+      <DependentUpon>MediaBrowse.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="pWait.resx">
+      <DependentUpon>pWait.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -196,6 +221,14 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="gopro_114px_1105917_easyicon.net.ico" />
+    <None Include="Resources\microSD_yellow.png" />
+    <None Include="Resources\microSD_red.png" />
+    <None Include="Resources\microSD_green.png" />
+    <None Include="Resources\empty.bmp" />
+    <Content Include="Resources\iconfinder_Button_Stop_72914.png" />
+    <None Include="Resources\toggle-button-bg-green.png" />
+    <None Include="Resources\toggle-button-bg-gray.png" />
+    <None Include="Resources\toggle-button.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>
