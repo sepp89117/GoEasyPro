@@ -8,12 +8,18 @@ Imports System.Threading
 Imports Newtonsoft.Json.Linq
 Imports NativeWifi
 Imports System.Text
+Imports Windows.Devices.Bluetooth
+Imports Windows.Devices.Bluetooth.Advertisement
+Imports Windows.Storage.Streams
+Imports Windows.Devices.Bluetooth.GenericAttributeProfile
+Imports Windows.Foundation
+Imports Windows.Devices.Enumeration
 
 Public Class Form1
-    Dim version As String = " V1.5"
-    Dim camMac As String() = {"4:41:69:4F:F:4B", "4:41:69:5E:4A:33", "4:41:69:5F:11:39", "4:41:69:5F:72:39"}
-    Dim camSSIDs As String() = {"GP55595978", "GP55880636", "GP55878998", "GP55881651"}
-    Dim camWifiPW As String() = {"action8476", "epic2439", "dive0415", "climb0225"}
+    Dim version As String = " V1.6.2"
+    Dim camMac(3) As String
+    Dim camSSIDs(3) As String
+    Dim camWifiPW(3) As String
     Public comportname As String
     Public baudrate As Integer = 115200
     Dim _connected As Boolean = False
@@ -22,7 +28,7 @@ Public Class Form1
     Dim scannedPort As String = Nothing
     Dim lastSee As Date() = {DateTime.Now, DateTime.Now, DateTime.Now, DateTime.Now}
     Dim Udp As New UdpClient
-    Public ma As New DataTable 'TODO in Form2 > Kamera SSIDs und Passwörter für WLAN-Direkt Verbindung
+    Public camsTBL As New DataTable 'Kamera SSIDs und Passwörter für WLAN-Direkt Verbindung
     Dim wifiClient = New WlanClient()
     Dim wifiIface As WlanClient.WlanInterface = wifiClient.Interfaces(0)
     Dim onClientList As New List(Of String)
@@ -30,22 +36,18 @@ Public Class Form1
     Dim sdBoxes(3) As PictureBox
     Dim foundCams(3) As Boolean
     Dim connectedCam(3) As Boolean
-
-    'TODO 'TM': [ 0b00000001, 0b00000000, 6, {}, 'Set date and time' ],
-    'TODO 'CM': [ 0b00000001, 0b00000000, 1, { 0 'video', 1: 'photo', 2: 'burst', 3: 'timelapse', 7: 'settings' }, 'Change mode' ],
-    'TODO 'FV': [ 0b00000001, 0b00000000, 1, { 0 'wide', 1: 'medium', 2: 'narrow' }, 'Set field of view' ],
+    Dim incomingData As String = Nothing
+    Dim onlines(3) As Boolean
 
     Private Sub Form1_Closing(sender As Object, e As EventArgs) Handles MyBase.Closing
         StopHosting()
     End Sub
 
-    Private Sub PictureBox1_Click(sender As Object, e As EventArgs) Handles PictureBox1.Click
+    Private Sub remoteOnOffBTN_Click(sender As Object, e As EventArgs) Handles remoteOnOffBTN.Click
         If _connected Then
 
-            StatusReqTimer.Enabled = False
             'Beende Hosting
             StopHosting()
-            'startTime_lbl.Text = "--:--:--"
         Else
             'Stelle Host für GoPros bereit
             StatusLabel1.Text = "Scanne nach COM-Port"
@@ -55,9 +57,9 @@ Public Class Form1
 
         'Switche Bild für Toggle-Button
         If _connected Then
-            PictureBox1.Image = My.Resources.ResourceManager.GetObject("_on")
+            remoteOnOffBTN.Image = My.Resources.ResourceManager.GetObject("_on")
         Else
-            PictureBox1.Image = My.Resources.ResourceManager.GetObject("_off")
+            remoteOnOffBTN.Image = My.Resources.ResourceManager.GetObject("_off")
         End If
     End Sub
 
@@ -66,7 +68,6 @@ Public Class Form1
 
             If scannedPort Is Nothing Then
                 comportname = AutoDetectArduino() 'for variable Port
-                'comportname = "COM3" 'for fast debug
             Else
                 comportname = scannedPort
             End If
@@ -87,6 +88,19 @@ Public Class Form1
                 readThread.Start()
                 _connected = SerialPort1.IsOpen
                 System.Threading.Thread.Sleep(1500)
+
+
+                'watcher.ScanningMode = BluetoothLEScanningMode.Active
+                '' Only activate the watcher when we're recieving values >= -80
+                'watcher.SignalStrengthFilter.InRangeThresholdInDBm = -85
+                '' Stop watching if the value drops below -90 (user walked away)
+                'watcher.SignalStrengthFilter.OutOfRangeThresholdInDBm = -90
+                '' Wait 5 seconds to make sure the device Is really out of range
+                'watcher.SignalStrengthFilter.OutOfRangeTimeout = TimeSpan.FromMilliseconds(5000)
+                'watcher.SignalStrengthFilter.SamplingInterval = TimeSpan.FromMilliseconds(2000)
+                '' Starting watching for advertisements
+                'watcher.Start()
+
             Catch ex As Exception
                 _connected = False
             End Try
@@ -104,7 +118,7 @@ Public Class Form1
     Private Sub StopHosting()
         If _recording Then
             If send_msg("<sh0>") Then
-                Timer2.Enabled = False
+                RecTimeTimer.Enabled = False
                 Label6.Text = "Aufnahme"
                 StartStopBtn.Image = My.Resources.rec_button
                 RecListBox.Items.Add("Start: " & startTime_lbl.Text & ", Dauer: " & recTime.ToString)
@@ -113,6 +127,9 @@ Public Class Form1
         End If
 
         Thread.Sleep(500)
+
+        'disable BLE
+        'watcher.Stop()
 
         If send_msg("<rc0>") Then
             While SerialPort1.IsOpen
@@ -131,9 +148,9 @@ Public Class Form1
         End If
         'Switche Bild für Toggle-Button
         If _connected Then
-            PictureBox1.Image = My.Resources.ResourceManager.GetObject("_on")
+            remoteOnOffBTN.Image = My.Resources.ResourceManager.GetObject("_on")
         Else
-            PictureBox1.Image = My.Resources.ResourceManager.GetObject("_off")
+            remoteOnOffBTN.Image = My.Resources.ResourceManager.GetObject("_off")
         End If
 
         M1.ForeColor = Color.Gray
@@ -179,22 +196,20 @@ Public Class Form1
         Return False
     End Function
 
-    Private Sub PictureBox6_Click(sender As Object, e As EventArgs) Handles StartStopBtn.Click
+    Private Sub StartStopBtn_Click(sender As Object, e As EventArgs) Handles StartStopBtn.Click
         'Start/Stop Record
         If Not _recording Then
             If send_msg("<sh1>") Then
                 startTime_lbl.Text = DateTime.Now.ToString("HH:mm:ss") & " Uhr"
                 recTime = New TimeSpan
-                Timer2.Enabled = True
+                RecTimeTimer.Enabled = True
                 Label6.Text = "Stopp"
                 StartStopBtn.Image = My.Resources.stop_button
                 Thread.Sleep(200)
-                'send_msg("<st>")
-                'RecListBox.Items.Add(startTime_lbl.Text & ", ")
             End If
         Else
             If send_msg("<sh0>") Then
-                Timer2.Enabled = False
+                RecTimeTimer.Enabled = False
                 Label6.Text = "Aufnahme"
                 StartStopBtn.Image = My.Resources.rec_button
                 Dim titleString As String = ""
@@ -208,18 +223,37 @@ Public Class Form1
     End Sub
 
     Private Sub Incoming_serial() ' Handles SerialPort.DataReceived
-        Dim incomingData As String = Nothing
+
 
         Try
-            incomingData = SerialPort1.ReadLine()
-            If incomingData IsNot Nothing Then
+            'If SerialPort1.BytesToRead > 15 Then
+
+            'incomingData = SerialPort1.ReadLine()
+
+            Static Buffer As String
+
+            Buffer += SerialPort1.ReadExisting
+
+            Dim CrLfPos As Integer = InStr(Buffer, vbCrLf)
+
+            If CrLfPos > 0 Then
+                incomingData = Buffer.Substring(0, CrLfPos)
+                Buffer = Mid(Buffer, CrLfPos + 2)   'clean up the Static buffer (data is double-buffered here)
+
                 Me.BeginInvoke(Sub() ReceivedText(incomingData))
             End If
+
+
+            'If incomingData IsNot Nothing Then
+            '    Me.BeginInvoke(Sub() ReceivedText(incomingData))
+            'End If
+
+
+            'End If
+
         Catch ex As Exception
         End Try
     End Sub
-
-    Dim onlines(3) As Boolean
 
     Private Sub OnlineTimer_Tick(sender As Object, e As EventArgs) Handles OnlineTimer.Tick
         Dim currentTime = DateTime.Now
@@ -237,24 +271,32 @@ Public Class Form1
                         ModePic1.Image = Nothing
                         status1_lbl.Text = "Offline"
                         stat1PB.Image = My.Resources.offline
+                        c1BattLbl.Text = "---%"
+                        c1DateLbl.Text = "Datum"
                     Case 1
                         onlines(i) = False
                         M2.ForeColor = Color.Gray
                         ModePic2.Image = Nothing
                         status2_lbl.Text = "Offline"
                         stat2PB.Image = My.Resources.offline
+                        c2BattLbl.Text = "---%"
+                        c2DateLbl.Text = "Datum"
                     Case 2
                         onlines(i) = False
                         M3.ForeColor = Color.Gray
                         ModePic3.Image = Nothing
                         status3_lbl.Text = "Offline"
                         stat3PB.Image = My.Resources.offline
+                        c3BattLbl.Text = "---%"
+                        c3DateLbl.Text = "Datum"
                     Case 3
                         onlines(i) = False
                         M4.ForeColor = Color.Gray
                         ModePic4.Image = Nothing
                         status4_lbl.Text = "Offline"
                         stat4PB.Image = My.Resources.offline
+                        c4BattLbl.Text = "---%"
+                        c4DateLbl.Text = "Datum"
                     Case 0 And 1 And 2 And 3
                         OnlineTimer.Enabled = False
                 End Select
@@ -271,17 +313,67 @@ Public Class Form1
             If text.Contains("1") Then
                 StatusLabel1.Text = "Fernbedienung gestartet"
             ElseIf text.Contains("0") Then
-                StatusLabel1.Text = "Fernbedinung AUS"
-                StopHosting()
+                'StatusLabel1.Text = "Fernbedinung AUS"
+                'StopHosting()
             End If
 
             'Behandle Online-Meldung
         ElseIf text.Contains("<pw1>") Then
 
+        ElseIf text.Contains("<BL>") Then
+            Dim battLevel As String = text.Remove(0, text.IndexOf("<BL>") + 4)
+            battLevel = battLevel.Remove(battLevel.IndexOf("</"), battLevel.Length - battLevel.IndexOf("</"))
+
+            Dim CamMacF As String = text.Remove(0, text.IndexOf("@") + 1).Replace(vbCr, "")
+
+            Dim x As Integer = 1
+            For Each mac As String In camMac
+                If mac = CamMacF Then
+                    Select Case x
+                        Case 1
+                            c1BattLbl.Text = battLevel & "%"
+                        Case 2
+                            c2BattLbl.Text = battLevel & "%"
+                        Case 3
+                            c3BattLbl.Text = battLevel & "%"
+                        Case 4
+                            c4BattLbl.Text = battLevel & "%"
+                    End Select
+                Else
+                    x += 1
+                End If
+            Next
+
+        ElseIf text.Contains("<TM>") Then
+            'YYYY-MM-DD, HH:mm:ss
+            Dim camDate As String = text.Remove(0, text.IndexOf("<TM>") + 4)
+            camDate = camDate.Remove(camDate.IndexOf("</"), camDate.Length - camDate.IndexOf("</"))
+            Dim theDate As New DateTime
+            theDate = Convert.ToDateTime(camDate)
+
+            Dim CamMacF As String = text.Remove(0, text.IndexOf("@") + 1).Replace(vbCr, "")
+
+            Dim x As Integer = 1
+            For Each mac As String In camMac
+                If mac = CamMacF Then
+                    Select Case x
+                        Case 1
+                            c1DateLbl.Text = theDate.ToString("dd.MM.yy, HH:mm:ss")
+                        Case 2
+                            c2DateLbl.Text = theDate.ToString("dd.MM.yy, HH:mm:ss")
+                        Case 3
+                            c3DateLbl.Text = theDate.ToString("dd.MM.yy, HH:mm:ss")
+                        Case 4
+                            c4DateLbl.Text = theDate.ToString("dd.MM.yy, HH:mm:ss")
+                    End Select
+                Else
+                    x += 1
+                End If
+            Next
+
         ElseIf text.Contains("<st>") Then
             Try
                 Dim status As String = text.Remove(0, text.IndexOf("<st>") + 4)
-                Dim i = status.IndexOf("</st>")
                 status = status.Remove(status.IndexOf("</"), status.Length - status.IndexOf("</"))
                 Dim statusSplit = status.Split(" ")
 
@@ -296,11 +388,11 @@ Public Class Form1
                     If mac = CamMacF Then
                         Select Case x
                             Case 1
-                                If Not onlines(0) Then
-                                    'send DateTime to cam
-                                    send_msg("<tm>" & DateTime.Now.ToString("yy MM dd HH mm ss") & "</tm>")
-                                    onlines(0) = True
-                                End If
+                                'If Not onlines(0) Then
+                                '    'send DateTime to cam
+                                '    send_msg("<tm>" & DateTime.Now.ToString("yy MM dd HH mm ss") & "</tm>")
+                                '    onlines(0) = True
+                                'End If
 
                                 lastSee(0) = DateTime.Now
 
@@ -329,11 +421,11 @@ Public Class Form1
                                     _recording = True
                                 End If
                             Case 2
-                                If Not onlines(1) Then
-                                    'send DateTime to cam
-                                    send_msg("<tm>" & DateTime.Now.ToString("yy MM dd HH mm ss") & "</tm>")
-                                    onlines(1) = True
-                                End If
+                                'If Not onlines(1) Then
+                                '    'send DateTime to cam
+                                '    send_msg("<tm>" & DateTime.Now.ToString("yy MM dd HH mm ss") & "</tm>")
+                                '    onlines(1) = True
+                                'End If
                                 lastSee(1) = DateTime.Now
 
                                 If shutter = 0 Then
@@ -362,11 +454,11 @@ Public Class Form1
                                     _recording = True
                                 End If
                             Case 3
-                                If Not onlines(2) Then
-                                    'send DateTime to cam
-                                    send_msg("<tm>" & DateTime.Now.ToString("yy MM dd HH mm ss") & "</tm>")
-                                    onlines(2) = True
-                                End If
+                                'If Not onlines(2) Then
+                                '    'send DateTime to cam
+                                '    send_msg("<tm>" & DateTime.Now.ToString("yy MM dd HH mm ss") & "</tm>")
+                                '    onlines(2) = True
+                                'End If
                                 lastSee(2) = DateTime.Now
 
                                 If shutter = 0 Then
@@ -394,11 +486,11 @@ Public Class Form1
                                     _recording = True
                                 End If
                             Case 4
-                                If Not onlines(3) Then
-                                    'send DateTime to cam
-                                    send_msg("<tm>" & DateTime.Now.ToString("yyMMddHHmmss") & "</tm>")
-                                    onlines(3) = True
-                                End If
+                                'If Not onlines(3) Then
+                                '    'send DateTime to cam
+                                '    send_msg("<tm>" & DateTime.Now.ToString("yyMMddHHmmss") & "</tm>")
+                                '    onlines(3) = True
+                                'End If
                                 lastSee(3) = DateTime.Now
 
                                 If shutter = 0 Then
@@ -466,7 +558,6 @@ Public Class Form1
             End Try
         ElseIf text.Contains("Exception") Then
             OnlineTimer.Enabled = False
-            StatusReqTimer.Enabled = False
             'Beende Hosting
             StopHosting()
             System.Threading.Thread.Sleep(3000)
@@ -474,9 +565,9 @@ Public Class Form1
 
             'Switche Bild für Toggle-Button
             If _connected Then
-                PictureBox1.Image = My.Resources.ResourceManager.GetObject("_on")
+                remoteOnOffBTN.Image = My.Resources.ResourceManager.GetObject("_on")
             Else
-                PictureBox1.Image = My.Resources.ResourceManager.GetObject("_off")
+                remoteOnOffBTN.Image = My.Resources.ResourceManager.GetObject("_off")
             End If
         End If
     End Sub
@@ -557,7 +648,6 @@ Public Class Form1
     End Function
 
     Public Function BitToRGB(ByVal input() As Byte) As Byte()
-        'Dim result((input.Length * 8 * 3) - 1) As Byte '8 pixels per byte, 3 bytes per pixel '= New Byte(((input.Length * (8 * 3))) - 1) {}
         Dim bitResult(input.Length + 1) As Byte
 
         Dim white() As Byte = New Byte() {240, 255, 240}
@@ -580,17 +670,6 @@ Public Class Form1
                     bitResult(byteIndex + 1) = bitResult(byteIndex + 1) Or (1 << (bitNr - 7))
                 End If
 
-
-
-                'Dim dstOffset = ((byteNo * 8) + bitNo) * 3
-
-                'prüfe ob schwarz oder weiß
-                'If ((input(byteNo) And (1 + bitNo)) <> 0) Then
-                '    Buffer.BlockCopy(white, 0, result, dstOffset, 3)
-                'Else
-                '    Buffer.BlockCopy(black, 0, result, dstOffset, 3)
-                'End If
-
                 bitIndex += 1
             Loop
 
@@ -601,12 +680,23 @@ Public Class Form1
     End Function
 
     Private Function AutoDetectArduino() As String
-        For Each sp As String In My.Computer.Ports.SerialPortNames
-            StatusLabel1.Text = "Prüfe Port " & sp & "..."
+        Dim portNos(My.Computer.Ports.SerialPortNames.Count) As String
+
+        For i = 0 To My.Computer.Ports.SerialPortNames.Count - 1
+            portNos(i) = My.Computer.Ports.SerialPortNames(i).Substring(3)
+        Next
+
+        Array.Sort(portNos)
+        Array.Reverse(portNos)
+
+        For Each portNo As String In portNos
+            StatusLabel1.Text = "Prüfe COM-Port " & portNo & "..."
             StatusStrip1.Refresh()
 
+            Dim portName As String = "COM" + portNo
+
             Try
-                SerialPort1 = New SerialPort(sp, baudrate, Parity.None, 8, StopBits.One)
+                SerialPort1 = New SerialPort(portName, baudrate, Parity.None, 8, StopBits.One)
                 SerialPort1.ReadTimeout = 2000
                 SerialPort1.WriteTimeout = 700
 
@@ -624,9 +714,9 @@ Public Class Form1
                     If serialMessage.Contains("GPRC") Then
                         ListeningWatch.Stop()
                         SerialPort1.Close()
-                        scannedPort = sp
+                        scannedPort = portName
                         Thread.Sleep(1000)
-                        Return sp
+                        Return portName
                         Exit For
                     End If
                 End While
@@ -637,12 +727,11 @@ Public Class Form1
         Return Nothing
     End Function
 
-    Private Sub PictureBox7_Click(sender As Object, e As EventArgs) Handles PictureBox7.Click
+    Private Sub camsOffBTN_Click(sender As Object, e As EventArgs) Handles camsOffBTN.Click
         If Not _recording Then
             If send_msg("<pw0>") Then
                 System.Threading.Thread.Sleep(800)
                 send_msg("<pw0>")
-                StatusReqTimer.Enabled = False
                 StatusLabel1.Text = "All Cams off"
                 System.Threading.Thread.Sleep(800)
                 M1.ForeColor = Color.Gray
@@ -673,7 +762,6 @@ Public Class Form1
                 If send_msg("<pw0>") Then
                     System.Threading.Thread.Sleep(800)
                     send_msg("<pw0>")
-                    StatusReqTimer.Enabled = False
                     StatusLabel1.Text = "All Cams off"
                     System.Threading.Thread.Sleep(800)
                     M1.ForeColor = Color.Gray
@@ -702,13 +790,9 @@ Public Class Form1
 
     End Sub
 
-    Private Sub StatusReqTimer_Tick(sender As Object, e As EventArgs) Handles StatusReqTimer.Tick
-        'send_msg("<st>")
-    End Sub
-
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Me.Text = Me.Text & version
-        Timer1.Enabled = True
+        UhrzeitTimer.Enabled = True
 
         For i = 0 To connectedCam.Length - 1
             connectedCam(i) = False
@@ -727,8 +811,54 @@ Public Class Form1
         sdBoxes(1) = SDbox2
         sdBoxes(2) = SDbox3
         sdBoxes(3) = SDbox4
+
+        'cam table laden
+        camsTBL.TableName = "cams"
+        camsTBL.Columns.Add("Cam-Name")
+        camsTBL.PrimaryKey = New DataColumn() {camsTBL.Columns(0)}
+        camsTBL.Columns.Add("MAC")
+        camsTBL.Columns.Add("SSID")
+        camsTBL.Columns.Add("Passwort")
+
+        Dim pfad As String = (Path.Combine(Application.StartupPath, "cams.xml"))
+        If File.Exists(pfad) Then
+            camsTBL.ReadXml(pfad)
+            SetCamData()
+        End If
     End Sub
 
+    Public Sub SetCamData()
+        For i = 0 To camsTBL.Rows.Count - 1
+            Dim row As DataRow = camsTBL.Rows.Item(i)
+            Dim camName As String = row.Item(0).ToString
+            Dim SSID As String = row.Item(2).ToString
+            Dim camNo = " (-" & SSID.Substring(8) & ") "
+
+            Select Case i
+                Case 0
+                    M1.Text = camName
+                    Mn1.Text = camNo
+                Case 1
+                    M2.Text = camName
+                    Mn2.Text = camNo
+                Case 2
+                    M3.Text = camName
+                    Mn3.Text = camNo
+                Case 3
+                    M4.Text = camName
+                    Mn4.Text = camNo
+            End Select
+
+            camMac(i) = row.Item(1).ToString
+            camSSIDs(i) = SSID
+            camWifiPW(i) = row.Item(3).ToString
+
+            'es werden nur max 4 Kameras unterstützt
+            If i >= 3 Then
+                Exit For
+            End If
+        Next
+    End Sub
     Private Sub GetAvailableNetworks()
         Dim networks() As Wlan.WlanAvailableNetwork
 
@@ -782,18 +912,18 @@ Public Class Form1
         End Try
     End Sub
 
-    Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
+    Private Sub UhrzeitTimer_Tick(sender As Object, e As EventArgs) Handles UhrzeitTimer.Tick
         lblUhrzeit.Text = DateTime.Now.ToLongTimeString
     End Sub
 
-    Private Sub Timer2_Tick(sender As Object, e As EventArgs) Handles Timer2.Tick
+    Private Sub RecTimeTimer_Tick(sender As Object, e As EventArgs) Handles RecTimeTimer.Tick
         Dim time1 As TimeSpan = TimeSpan.FromSeconds(1)
         recTime = recTime.Add(time1)
-        Label3.Text = recTime.ToString
+        recTimeLBL.Text = recTime.ToString
     End Sub
 
     Private Sub PictureBox6_Click_1(sender As Object, e As EventArgs) Handles PictureBox6.Click, AufnahmelisteToolStripMenuItem.Click
-        'Zeige Liste der Aufnahme-Uhrzeiten 898; 521
+        'Zeige Liste der Aufnahme-Uhrzeiten
         If Me.Height = 731 Then
             Me.Height = 521
         Else
@@ -806,6 +936,9 @@ Public Class Form1
     End Sub
 
     Private Sub SDbox1_Click(sender As Object, e As EventArgs) Handles SDbox1.Click
+        'wake wifi via BLE
+        'TODO
+
         'verbinde wifi mit cam 1
         pWait.Show(Me)
         pWait.Refresh()
@@ -866,6 +999,7 @@ Public Class Form1
                 Try
                     wifiIface.SetProfile(Wlan.WlanProfileFlags.AllUser, profileXml, True)
                 Catch
+                    'profil vorhanden
                 End Try
 
                 conSsid = wifiIface.CurrentConnection.wlanAssociationAttributes.dot11Ssid
@@ -901,8 +1035,8 @@ Public Class Form1
             Else
                 connectedCam(camNr) = True
             End If
-        Catch ex As Exception
-            MessageBox.Show(ex.Message)
+        Catch 'ex As Exception
+            'MessageBox.Show(ex.Message)
 
         End Try
 
@@ -911,24 +1045,27 @@ Public Class Form1
             lWait.Show(Me)
             lWait.Refresh()
 
-            showVideoList()
+            showVideoList(profileName)
         Else
             MessageBox.Show("Keine Verbindung zu " & profileName)
         End If
     End Sub
 
-    Private Sub showVideoList()
+    Private Sub showVideoList(profileName)
         'Rufe Videoliste als JSON ab von http://10.5.5.9:8080/gp/gpMediaList
+        Dim mediaInfoStr As String = ""
+        Dim mediaInfo As JToken
+
         Try
             Dim request As HttpWebRequest = DirectCast(WebRequest.Create("http://10.5.5.9:8080/gp/gpMediaList"), HttpWebRequest)
             Dim response As HttpWebResponse = DirectCast(request.GetResponse(), HttpWebResponse)
             Dim reader As StreamReader = New StreamReader(response.GetResponseStream())
-            Dim mediaInfoStr As String = reader.ReadToEnd()
+            mediaInfoStr = reader.ReadToEnd()
             'Hole JSON-Mediainfo in mediaInfoJSA
             Dim json As JObject
 
             json = JObject.Parse(mediaInfoStr)
-            Dim mediaInfo = json.Last.First.First
+            mediaInfo = json.Last.First.First
 
             Dim mediaDirectory As JProperty = mediaInfo.First
             Dim mediaList As JArray = mediaInfo.Last.First
@@ -964,7 +1101,13 @@ Public Class Form1
             MediaBrowse.Show(Me)
         Catch
             lWait.Close()
-            MessageBox.Show("Fehler beim Laden der Liste. GoPro mit App gekoppelt?")
+            If Not mediaInfoStr = "" And IsNothing(mediaInfo) Then
+                MessageBox.Show("Speicherkarte leer?")
+            Else
+                MessageBox.Show("Fehler beim Laden der Liste. Bitte erneut versuchen!")
+            End If
+
+            wifiIface.DeleteProfile(profileName)
         End Try
     End Sub
 
@@ -978,5 +1121,39 @@ Public Class Form1
 
     Private Sub getNetworksTimer_Tick(sender As Object, e As EventArgs) Handles getNetworksTimer.Tick
         GetAvailableNetworks()
+    End Sub
+
+    'Private Sub SetTimeBtn_Click(sender As Object, e As EventArgs)
+    '    'set date time in gopro
+    '    'http://10.5.5.9/gp/gpControl/command/setup/date_time?p=%11%0b%10%11%29%2c
+
+    'End Sub
+
+    Private Sub VideomodusToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles VideomodusToolStripMenuItem.Click
+        send_msg("<cmv>")
+    End Sub
+
+    Private Sub PhotomodusToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PhotomodusToolStripMenuItem.Click
+        send_msg("<cmp>")
+    End Sub
+
+    Private Sub BurstToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles BurstToolStripMenuItem.Click
+        send_msg("<cmb>")
+    End Sub
+
+    Private Sub TimelapseToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles TimelapseToolStripMenuItem.Click
+        send_msg("<cml>")
+    End Sub
+
+    Private Sub EinstellungenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EinstellungenToolStripMenuItem.Click
+        Form2.ShowDialog(Me)
+    End Sub
+
+    Private Sub camsRestartBTN_Click_1(sender As Object, e As EventArgs) Handles camsRestartBTN.Click
+        send_msg("<pw0>")
+        Thread.Sleep(2000)
+        send_msg("<rc0>")
+        Thread.Sleep(3000)
+        send_msg("<rc1>")
     End Sub
 End Class

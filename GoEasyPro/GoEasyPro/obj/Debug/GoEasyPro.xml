@@ -37,11 +37,6 @@ GoEasyPro
   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
 </summary>
 </member>
-<member name="P:GoEasyPro.My.Resources.Resources.iconfinder_gopro_416381">
-<summary>
-  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-</summary>
-</member>
 <member name="P:GoEasyPro.My.Resources.Resources.iconfinder_power_1055002">
 <summary>
   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
@@ -57,17 +52,27 @@ GoEasyPro
   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
 </summary>
 </member>
+<member name="P:GoEasyPro.My.Resources.Resources.microSD_green">
+<summary>
+  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:GoEasyPro.My.Resources.Resources.microSD_red">
+<summary>
+  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:GoEasyPro.My.Resources.Resources.microSD_yellow">
+<summary>
+  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+</summary>
+</member>
 <member name="P:GoEasyPro.My.Resources.Resources.offline">
 <summary>
   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
 </summary>
 </member>
 <member name="P:GoEasyPro.My.Resources.Resources.online">
-<summary>
-  Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-</summary>
-</member>
-<member name="P:GoEasyPro.My.Resources.Resources.photomode">
 <summary>
   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
 </summary>
@@ -82,7 +87,7 @@ GoEasyPro
   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
 </summary>
 </member>
-<member name="P:GoEasyPro.My.Resources.Resources.videomode">
+<member name="P:GoEasyPro.My.Resources.Resources.stop_button">
 <summary>
   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
 </summary>
