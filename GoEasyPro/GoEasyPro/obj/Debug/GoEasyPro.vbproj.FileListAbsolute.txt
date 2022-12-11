@@ -1,0 +1,51 @@
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\bin\Debug\GoEasyPro.exe.config
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\bin\Debug\GoEasyPro.exe
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\bin\Debug\GoEasyPro.pdb
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\bin\Debug\GoEasyPro.xml
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.vbprojAssemblyReference.cache
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.Form1.resources
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.Resources.resources
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.vbproj.GenerateResource.cache
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.vbproj.CoreCompileInputs.cache
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.exe
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.xml
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.pdb
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.Form2.resources
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.vbproj.CopyComplete
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.MediaBrowse.resources
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\bin\Debug\ManagedWifi.dll
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.pWait.resources
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.lWait.resources
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\bin\Debug\System.ValueTuple.dll
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\bin\Debug\ManagedWifi.pdb
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\bin\Debug\System.Reactive.dll
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\bin\Debug\System.Runtime.WindowsRuntime.dll
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\bin\Debug\System.Threading.Tasks.Extensions.dll
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\bin\Debug\System.Reactive.xml
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\bin\Debug\System.Runtime.WindowsRuntime.xml
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\bin\Debug\System.Threading.Tasks.Extensions.xml
+C:\Users\Sebastian Balzer\source\repos\GoEasyPro\GoEasyPro\bin\Debug\System.ValueTuple.xml
+C:\Users\Sebastian\source\repos\GoEasyPro\GoEasyPro\bin\Debug\GoEasyPro.exe.config
+C:\Users\Sebastian\source\repos\GoEasyPro\GoEasyPro\bin\Debug\GoEasyPro.exe
+C:\Users\Sebastian\source\repos\GoEasyPro\GoEasyPro\bin\Debug\GoEasyPro.pdb
+C:\Users\Sebastian\source\repos\GoEasyPro\GoEasyPro\bin\Debug\GoEasyPro.xml
+C:\Users\Sebastian\source\repos\GoEasyPro\GoEasyPro\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Sebastian\source\repos\GoEasyPro\GoEasyPro\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Sebastian\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.vbproj.AssemblyReference.cache
+C:\Users\Sebastian\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.vbproj.SuggestedBindingRedirects.cache
+C:\Users\Sebastian\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.Form1.resources
+C:\Users\Sebastian\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.Form2.resources
+C:\Users\Sebastian\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.lWait.resources
+C:\Users\Sebastian\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.MediaBrowse.resources
+C:\Users\Sebastian\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.Resources.resources
+C:\Users\Sebastian\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.pWait.resources
+C:\Users\Sebastian\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.vbproj.GenerateResource.cache
+C:\Users\Sebastian\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.vbproj.CoreCompileInputs.cache
+C:\Users\Sebastian\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.vbproj.CopyComplete
+C:\Users\Sebastian\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.exe
+C:\Users\Sebastian\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.xml
+C:\Users\Sebastian\source\repos\GoEasyPro\GoEasyPro\obj\Debug\GoEasyPro.pdb
